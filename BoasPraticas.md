@@ -8,6 +8,10 @@
     - [Princípio Fundamental: Um bloco `try...finally` para cada recurso.](#princípio-fundamental-um-bloco-tryfinally-para-cada-recurso)
   - [2. Captura de Erros e a Responsabilidade da Mensagem com `try...except`](#2-captura-de-erros-e-a-responsabilidade-da-mensagem-com-tryexcept)
     - [Princípio Fundamental: Separe a lógica de negócio da interface do usuário.](#princípio-fundamental-separe-a-lógica-de-negócio-da-interface-do-usuário)
+- [Commits](#commits)
+- [Não use `with`](#não-use-with)
+- [Mudanças de comportamento do código](#mudanças-de-comportamento-do-código)
+- [Criação de APIs (bibliotecas, classes, endpoints)](#criação-de-apis)
 
 ---
 ---
@@ -201,6 +205,13 @@ Sempre que precisamos alterar um comportamento, ou  o ideal é o seguinte:
 2. Monitorar o tópico com dúvidas, enquanto não chega a data X, avaliando possíveis problemas que poderiam indicar que a mudança precisa ser adiada.
 3. Na data X publicar a alteração. Se necessário um novo tópico.
     - Em alguns casos, algum recurso não deve mais funcionar e nao é possível manter a compatibilidade. Nesses casos é preferível que o commit quebre **compilações** que façam uso do recurso. Quebrar na compilação é muito melhor do que deixar um comportamento indesejado sendo executado. Assim o programador pode identificar a alteração necessária de cara. Se isso não acontecer, talvez o programador só perceba o problema tempos depois. Mas aí a possibilidade do comportamento já ter causado danos irreversíveis é real. Veja também o "Fail Fast principle".
+
+## Criação de APIs
+
+APIs aqui se refere a qualquer interface de programação que é criada e se comunica com outras partes por meio de métodos. Inclui bibliotecas, classes, endpoints, webservices, etc...
+
+1. Não use nomes diferentes para a mesma coisa. Use nomes coerentes. Por exemplo, não crie uma classe com método `HabilitaFiltro` e uma função `ExisteAlgumFiltroAtivo` se "Habilitar" e "Ativo" tiverem o mesmo significado nesse contexto. Isso cria confusão. [Veja também esse blog.](https://devblogs.microsoft.com/oldnewthing/20250728-00/?p=111415)
+2. Evite métodos com o mesmo nome, por exemplo, usando `overload`. Geralmente isso indica que ou o nome do método não é específico o suficiente ou que ele está fazendo coisas demais.
 
 ## Referências
 

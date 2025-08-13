@@ -88,6 +88,8 @@ Nomes de classes devem seguir a convenção Upper Camel Case (PascalCase), onde 
 
 Classes que herdam de Exception devem ser nomeadas com o prefixo "E", seguindo a convenção de nomenclatura PascalCase.
 
+Da mesma maneira, Interfaces devem iniciar com o prefixo "I".
+
 **Por exemplo:**
 
 - `TCalculadoraDeJuros`
@@ -106,17 +108,17 @@ Os escopos de visibilidade declarados em uma classe devem estar, sempre que poss
 TCliente = 
 class
   strict private
-    // Escopo estritamente privado
+    // Escopo estritamente privado (Não funciona no Delphi 7)
   private
     // Escopo privado
   strict protected
-    // Escopo estritamente protegido
+    // Escopo estritamente protegido (Não funciona no Delphi 7)
   protected
     // Escopo protegido
   public
     // Escopo público
   published
-  // Escopo publicável
+    // Escopo publicável
   end;
 ```
 
@@ -145,11 +147,11 @@ type
 
 ### 4. Métodos
 
+- Devemos nomear métodos seguindo a convenção PascalCase.
 - Métodos devem receber nomes significativos que descrevam claramente sua funcionalidade.
 - O verbo que representa a ação deve ser sempre no infinitivo.
-- Devemos nomear métodos seguindo a convenção PascalCase.
-- Parametros:
-  - devem ser prefixados com a letra `p` minúscula, seguido pelo nome da propriedade. Isso ajuda a distinguir parâmetros de atributos e variáveis locais. Após o prefixo devemos seguir o padrão PascalCase.
+- Parâmetros:
+  - Devem ser prefixados com a letra `A` maiúscula, seguido pelo nome da propriedade. Isso ajuda a distinguir parâmetros de atributos e variáveis locais. Após o prefixo devemos seguir o padrão PascalCase.
   - Sempre que a regra do método permitir, parametros devem ser declarados como `const`
   - Parâmetros do tipo interface devem ser, preferencialmente, declarados sem a diretiva
     const. Esta medida visa evitar memory leaks em decorrência da construção do objeto
@@ -157,22 +159,22 @@ type
 
 Sempre que a regra de uma function permitir, seu resultado deve
 ser escrito diretamente dentro da variável Result, evitando o uso
-de variáveis auxiliares
+de variáveis auxiliares.
 
 **Por exemplo:**
 
 ```pascal
-function MontarNomeCompleto(const Nome, Sobrenome: string): string;
+function MontarNomeCompleto(const ANome, ASobrenome: string): string;
 begin
-  Result := Nome + ' ' + Sobrenome;
+  Result := ANome + ' ' + ASobrenome;
 end;
 ```
 
 ### 5. Variables locais
 
-Variáveis locais devem ser prefixadas com a letra ‘l’ (‘L’)
-minúscula. Depois de prefixadas, as variáveis devem ser batizadas
-seguindo o método Upper Camel Case.
+Variáveis locais devem ser prefixadas com a letra "L" minúscula, como em `l`.
+Depois de prefixadas, as variáveis devem ser batizadas
+seguindo a convenção PascalCase.
 
 ### 6. Corpo de uma classe
 
@@ -206,3 +208,4 @@ Métodos que implementam uma Interface específica, podem ser colocados juntos e
 - [RADProgrammer Style Guide](https://github.com/radprogrammer/radteam/wiki/RADProgrammer-Style-Guide)
 - [Castle Engine Coding Conventions](https://castle-engine.io/coding_conventions)
 - [Delphi Language Coding Standards Document](https://web.archive.org/web/20170607183644/http://kodu.ut.ee/~jellen/delphi/cs.html)
+- [Project JEDI Delphi Language Style Guide](https://wiki.delphi-jedi.org/wiki/Style_Guide)

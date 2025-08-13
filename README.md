@@ -4,3 +4,4 @@ Repositório para criação de padrões de código, guias de estilo, recomendaç
 
 - [Boas Práticas](BoasPraticas.md)
 - [Guia Estilos Pascal](GuiaEstilosPascal.md)
+- [Configuração IDEs](ConfiguracaoIDE.md)
