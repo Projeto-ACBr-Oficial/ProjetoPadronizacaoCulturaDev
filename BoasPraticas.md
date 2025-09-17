@@ -12,6 +12,7 @@
 - [Não use `with`](#não-use-with)
 - [Mudanças de comportamento do código](#mudanças-de-comportamento-do-código)
 - [Criação de APIs (bibliotecas, classes, endpoints)](#criação-de-apis)
+- [Warnings e hints no código](#warnings-e-hints-no-código)
 
 ---
 ---
@@ -212,6 +213,10 @@ APIs aqui se refere a qualquer interface de programação que é criada e se com
 
 1. Não use nomes diferentes para a mesma coisa. Use nomes coerentes. Por exemplo, não crie uma classe com método `HabilitaFiltro` e uma função `ExisteAlgumFiltroAtivo` se "Habilitar" e "Ativo" tiverem o mesmo significado nesse contexto. Isso cria confusão. [Veja também esse blog.](https://devblogs.microsoft.com/oldnewthing/20250728-00/?p=111415)
 2. Evite métodos com o mesmo nome, por exemplo, usando `overload`. Geralmente isso indica que ou o nome do método não é específico o suficiente ou que ele está fazendo coisas demais.
+
+## Warnings e hints no código
+
+Ao adicionar novo código certifique-se que ele não adicione novos warnings e hints. Ao mexer em códigos antigos, lembre-se da regra do escoteiro: "Deixe o local mais limpo que o encontrou". Queremos, se possível, reduzir a zero o número de wanings e hints que são gerados pelo compilador e ferramentas como FixInsight, SonarCube, etc. 
 
 ## Referências
 
