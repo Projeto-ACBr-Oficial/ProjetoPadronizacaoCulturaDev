@@ -13,6 +13,8 @@
 - [Mudanças de comportamento do código](#mudanças-de-comportamento-do-código)
 - [Criação de APIs (bibliotecas, classes, endpoints)](#criação-de-apis)
 - [Warnings e hints no código](#warnings-e-hints-no-código)
+- [Comentários](#comentários)
+- [Referências](#referências)
 
 ---
 ---
@@ -216,8 +218,13 @@ APIs aqui se refere a qualquer interface de programação que é criada e se com
 
 ## Warnings e hints no código
 
-Ao adicionar novo código certifique-se que ele não adicione novos warnings e hints. Ao mexer em códigos antigos, lembre-se da regra do escoteiro: "Deixe o local mais limpo que o encontrou". Queremos, se possível, reduzir a zero o número de wanings e hints que são gerados pelo compilador e ferramentas como FixInsight, SonarCube, etc. 
+Ao adicionar novo código certifique-se que ele não adicione novos warnings e hints. Ao mexer em códigos antigos, lembre-se da regra do escoteiro: "Deixe o local mais limpo que o encontrou". Queremos, se possível, reduzir a zero o número de wanings e hints que são gerados pelo compilador e ferramentas como FixInsight, SonarCube, etc.
+
+## Comentários
+
+Comments are for describing what the code does, or better, why the code is doing what it’s doing. If you want to say “And here is where you would insert your app-specific business logic”, then don’t use a comment. Call out to a method that is not implemented in the sample.(Veja Referência 1).
 
 ## Referências
 
  Algumas referências em caso de dúvidas:
+ 1 - https://devblogs.microsoft.com/oldnewthing/20250925-00/?p=111627
