@@ -201,7 +201,7 @@ end;
 
 ## Mudanças de comportamento do código
 
-Sempre que precisamos alterar um comportamento, ou  o ideal é o seguinte:
+Sempre que precisamos alterar um comportamento, API (veja definição abaixo) ou recurso o ideal é o seguinte:
 
 1. Criar tópico de notícias com resumo da alteração juntamente com aviso que "na data X, daqui a Y dias, será feita uma alteração de comportamento". Criar juntamente um tópico que explica os detalhes da modificação para receber possíveis dúvidas.
     - Se possível fazer commits que mostrar que a funcionalidade está se tornando obsoleta. Por exemplo diretivas deprecated no Delphi/Lazarus.
@@ -214,7 +214,8 @@ Sempre que precisamos alterar um comportamento, ou  o ideal é o seguinte:
 APIs aqui se refere a qualquer interface de programação que é criada e se comunica com outras partes por meio de métodos. Inclui bibliotecas, classes, endpoints, webservices, etc...
 
 1. Não use nomes diferentes para a mesma coisa. Use nomes coerentes. Por exemplo, não crie uma classe com método `HabilitaFiltro` e uma função `ExisteAlgumFiltroAtivo` se "Habilitar" e "Ativo" tiverem o mesmo significado nesse contexto. Isso cria confusão. [Veja também esse blog.](https://devblogs.microsoft.com/oldnewthing/20250728-00/?p=111415)
-2. Evite métodos com o mesmo nome, por exemplo, usando `overload`. Geralmente isso indica que ou o nome do método não é específico o suficiente ou que ele está fazendo coisas demais.
+2. Evite métodos com o mesmo nome, por exemplo, usando `overload`. Geralmente isso indica que ou o nome do método não é específico o suficiente ou que ele está fazendo coisas demais. Veja um exemplo simples no Delphi: não existe apenas uma função `ToStr()` cujo parâmetro aceita vários tipos de dados. Existem funções específicas `IntToStr()`, `FloatToStr()`, `DateToStr()`, etc...
+3. Ao estender uma API, use “pay for play”: Os programas podem chamar a nova API para ter acesso a novos recursos, mas os programas que optarem por não fazê-lo não são afetados, e o código antigo continua funcionando como antes. É aceitável adicionar requisitos adicionais para quem quiser usar o novo recurso, como, “Se você pretende inverter a polaridade de um widget, deve passar o sinalizador AllowPolarityReversal ao criar o widget.” O código pré-existente não passará esse sinalizador, mas também não estará tentando inverter a polaridade.
 
 ## Warnings e hints no código
 
@@ -222,9 +223,80 @@ Ao adicionar novo código certifique-se que ele não adicione novos warnings e h
 
 ## Comentários
 
-Comments are for describing what the code does, or better, why the code is doing what it’s doing. If you want to say “And here is where you would insert your app-specific business logic”, then don’t use a comment. Call out to a method that is not implemented in the sample.(Veja Referência 1).
+Comentários servem para descrever o que o código faz, ou melhor ainda, **por que** o código está fazendo o que está fazendo.(Veja Referência 1)
+
+1. Ao criar um exemplo, demo, modelo de código: Se você quiser dizer “E aqui é onde você inseriria a lógica de negócio específica da sua aplicação”, então não use um comentário. Em vez disso, chame um método que não esteja implementado no exemplo (Exemplo abaixo retirado da referência 1). Por exemplo, podemos ter isto:
+
+```pascal
+type
+  TSample = class
+  private
+    procedure RegisterEvents;
+  end;
+
+procedure TSample.RegisterEvents;
+begin
+  // Registra um manipulador para executar quando uma mensagem for recebida.
+  Widget.OnMessageReceived :=
+    procedure(Sender: TObject; const E: TMessageEventArgs)
+    begin
+      // Este é o remetente que estamos aguardando?
+      if E.SenderId = ExpectedSenderId then
+      begin
+        // Processa a mensagem.
+        E.Handled := True;
+      end
+      else
+      begin
+        // Ignora mensagens de remetentes inesperados.
+      end;
+    end;
+end;
+```
+
+O comentário “Processa a mensagem” tem a intenção de significar “Aqui é onde você escreve o código para processar a mensagem.” Mas ele pode facilmente ser mal interpretado como “A forma de processar a mensagem é definir a propriedade Handled como True.”
+
+Se você quiser dizer “E aqui é onde você inseriria a lógica de negócio específica da sua aplicação”, então não use um comentário. Em vez disso, chame um método que não esteja implementado no exemplo.
+
+```pascal
+type
+  TSample = class
+  private
+    procedure RegisterEvents;
+    procedure ProcessMessage(Kind: TWidgetMessageKind; const Data: TBytes);
+  end;
+
+procedure TSample.RegisterEvents;
+begin
+  // Registra um manipulador para executar quando uma mensagem for recebida.
+  Widget.OnMessageReceived :=
+    procedure(Sender: TObject; const E: TMessageEventArgs)
+    begin
+      // Este é o remetente que estamos aguardando?
+      if E.SenderId = ExpectedSenderId then
+      begin
+        ProcessMessage(E.MessageKind, E.MessageData);
+        E.Handled := True;
+      end
+      else
+      begin
+        // Ignora mensagens de remetentes inesperados.
+      end;
+    end;
+end;
+
+procedure TSample.ProcessMessage(Kind: TWidgetMessageKind; const Data: TBytes);
+begin
+  // A lógica de negócio deve ser implementada aqui.
+end;
+```
+
+
+2. Os comentários no código devem se aplicar ao estado do sistema no ponto em que o comentário “é executado”. Por exemplo, não se deve colocar no comentário uma situação que ainda será testada (Veja Referência 2).
 
 ## Referências
 
  Algumas referências em caso de dúvidas:
- 1 - https://devblogs.microsoft.com/oldnewthing/20250925-00/?p=111627
+ 1 - <https://devblogs.microsoft.com/oldnewthing/20250925-00/?p=111627>
+ 2 - <https://devblogs.microsoft.com/oldnewthing/20251006-00/?p=111655>
+ 3 - <https://devblogs.microsoft.com/oldnewthing/20251023-00/?p=111716>
