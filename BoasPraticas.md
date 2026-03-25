@@ -199,6 +199,20 @@ end;
 
  **Obs.:** Apesar disso há muito uso de `with` no código Pascal do ACBr. É necessário refatorar esse código **apenas** se você estiver trabalhando nele.
 
+## Evite recursos da linguagem que possam gerar erros facilmente ou tornem mais difícil a manutenção
+
+In Delphi, refrain from using new language features until the product fully supports it including at least these bits:
+
+- documentation
+- code generation / code completion
+- run-time behaviour (like memory leaks)
+- editor support (navigation, selection, expansion)
+- code refactoring
+- code formatting
+- debugger support
+
+Por exemplo no Delphi, não utilize as variáveis "inline". Há [vários problemas](https://wiert.me/2026/03/19/radprogrammer-style-guide-%c2%b7-radprogrammer-radteam-wiki/) no uso desse recurso, como por exemplo vazamento de memória.
+
 ## Mudanças de comportamento do código
 
 Sempre que precisamos alterar um comportamento, API (veja definição abaixo) ou recurso o ideal é o seguinte:
@@ -225,72 +239,73 @@ Ao adicionar novo código certifique-se que ele não adicione novos warnings e h
 
 Comentários servem para descrever o que o código faz, ou melhor ainda, **por que** o código está fazendo o que está fazendo.(Veja Referência 1)
 
-1. Ao criar um exemplo, demo, modelo de código: Se você quiser dizer “E aqui é onde você inseriria a lógica de negócio específica da sua aplicação”, então não use um comentário. Em vez disso, chame um método que não esteja implementado no exemplo (Exemplo abaixo retirado da referência 1). Por exemplo, podemos ter isto:
+1. Ao criar um exemplo, demo, modelo de código: Se você quiser dizer “E aqui é onde você inseriria a lógica de negócio específica da sua aplicação”, então não use um comentário. Em vez disso, chame um método que não esteja implementado no exemplo (Exemplo abaixo retirado da referência 1).
+  
+   - Por exemplo, podemos ter isto:
 
-```pascal
-type
-  TSample = class
-  private
-    procedure RegisterEvents;
-  end;
-
-procedure TSample.RegisterEvents;
-begin
-  // Registra um manipulador para executar quando uma mensagem for recebida.
-  Widget.OnMessageReceived :=
-    procedure(Sender: TObject; const E: TMessageEventArgs)
-    begin
-      // Este é o remetente que estamos aguardando?
-      if E.SenderId = ExpectedSenderId then
-      begin
-        // Processa a mensagem.
-        E.Handled := True;
-      end
-      else
-      begin
-        // Ignora mensagens de remetentes inesperados.
+    ```pascal
+    type
+      TSample = class
+      private
+        procedure RegisterEvents;
       end;
-    end;
-end;
-```
 
-O comentário “Processa a mensagem” tem a intenção de significar “Aqui é onde você escreve o código para processar a mensagem.” Mas ele pode facilmente ser mal interpretado como “A forma de processar a mensagem é definir a propriedade Handled como True.”
-
-Se você quiser dizer “E aqui é onde você inseriria a lógica de negócio específica da sua aplicação”, então não use um comentário. Em vez disso, chame um método que não esteja implementado no exemplo.
-
-```pascal
-type
-  TSample = class
-  private
-    procedure RegisterEvents;
-    procedure ProcessMessage(Kind: TWidgetMessageKind; const Data: TBytes);
-  end;
-
-procedure TSample.RegisterEvents;
-begin
-  // Registra um manipulador para executar quando uma mensagem for recebida.
-  Widget.OnMessageReceived :=
-    procedure(Sender: TObject; const E: TMessageEventArgs)
+    procedure TSample.RegisterEvents;
     begin
-      // Este é o remetente que estamos aguardando?
-      if E.SenderId = ExpectedSenderId then
-      begin
-        ProcessMessage(E.MessageKind, E.MessageData);
-        E.Handled := True;
-      end
-      else
-      begin
-        // Ignora mensagens de remetentes inesperados.
-      end;
+      // Registra um manipulador para executar quando uma mensagem for recebida.
+      Widget.OnMessageReceived :=
+        procedure(Sender: TObject; const E: TMessageEventArgs)
+        begin
+          // Este é o remetente que estamos aguardando?
+          if E.SenderId = ExpectedSenderId then
+          begin
+            // Processa a mensagem.
+            E.Handled := True;
+          end
+          else
+          begin
+            // Ignora mensagens de remetentes inesperados.
+          end;
+        end;
     end;
-end;
+    ```
 
-procedure TSample.ProcessMessage(Kind: TWidgetMessageKind; const Data: TBytes);
-begin
-  // A lógica de negócio deve ser implementada aqui.
-end;
-```
+   - O comentário “Processa a mensagem” tem a intenção de significar “Aqui é onde você escreve o código para processar a mensagem.” Mas ele pode facilmente ser mal interpretado como “A forma de processar a mensagem é definir a propriedade Handled como True.”
 
+   - Se você quiser dizer “E aqui é onde você inseriria a lógica de negócio específica da sua aplicação”, então não use um comentário. Em vez disso, chame um método que não esteja implementado no exemplo.
+
+    ```pascal
+    type
+      TSample = class
+      private
+        procedure RegisterEvents;
+        procedure ProcessMessage(Kind: TWidgetMessageKind; const Data: TBytes);
+      end;
+
+    procedure TSample.RegisterEvents;
+    begin
+      // Registra um manipulador para executar quando uma mensagem for recebida.
+      Widget.OnMessageReceived :=
+        procedure(Sender: TObject; const E: TMessageEventArgs)
+        begin
+          // Este é o remetente que estamos aguardando?
+          if E.SenderId = ExpectedSenderId then
+          begin
+            ProcessMessage(E.MessageKind, E.MessageData);
+            E.Handled := True;
+          end
+          else
+          begin
+            // Ignora mensagens de remetentes inesperados.
+          end;
+        end;
+    end;
+
+    procedure TSample.ProcessMessage(Kind: TWidgetMessageKind; const Data: TBytes);
+    begin
+      // A lógica de negócio deve ser implementada aqui.
+    end;
+    ```
 
 2. Os comentários no código devem se aplicar ao estado do sistema no ponto em que o comentário “é executado”. Por exemplo, não se deve colocar no comentário uma situação que ainda será testada (Veja Referência 2).
 
